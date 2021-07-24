@@ -9,23 +9,52 @@
 #include "connect_socket.h"
 #include "answer_data.h"
 
+//user status
 
-#define NOT_AUTHORISED 1
-#define AUTHORISED 2
+#define NOT_AUTHORISED	1
+#define AUTHORISED		2
 
+//command retur values
 
+#define NO_ACTION		100
+#define COMMAND_ERROR	101
+#define INPUT_OK		111
+#define INPUT_ERROR		112
+#define INPUT_CANCELED	113
+
+//utility
+
+bool is_letter_or_digit(char _c)
+{
+	if ((_c > 47 && _c < 58) || (_c > 64 && _c < 91) || (_c > 96 && _c < 123) || (_c == '_')) return true;
+	else return false;
+}
 
 //command functions
 
-bool new_data_input(std::string& _data)
+int new_data_input(std::string& _data)
 {
 	std::string name, password;
-	std::cout << "enter group name and password:\n";
-	std::cin >> name >> password;
-
-	if (name.size() == 0 || password.size() == 0)
+	std::cout << "enter group name and password or \"/cancel\".\n"
+		"name and password can only contain english letters, digits or \'_\' and can't be longer then 20 symbols\n";
+	std::cout << "name: ";
+	std::cin >> name;
+	std::cout << "\n";
+	if (name == "/cancel") return INPUT_CANCELED;
+	if (name.size() > 20 || name.size() == 0) return INPUT_ERROR;
+	for (int i = 0; i < name.size(); ++i)
 	{
-		return false;
+		if (is_letter_or_digit(name[i]) == false) return INPUT_ERROR;
+	}
+
+	std::cout << "password: ";
+	std::cin >> password;
+	std::cout << "\n";
+	if (password == "/cancel") return INPUT_CANCELED;
+	if (password.size() > 20 || password.size() == 0) return INPUT_ERROR;
+	for (int i = 0; i < password.size(); ++i)
+	{
+		if (is_letter_or_digit(password[i]) == false) return INPUT_ERROR;
 	}
 
 	_data += '&';
@@ -35,18 +64,31 @@ bool new_data_input(std::string& _data)
 	_data += (char)password.size();
 	_data += password;
 
-	return true;
+	return INPUT_OK;
 }
 
-bool connect_data_input(std::string& _data)
+int connect_data_input(std::string& _data)
 {
 	std::string name, password;
-	std::cout << "enter group name and password:\n";
-	std::cin >> name >> password;
-
-	if (name.size() == 0 || password.size() == 0)
+	std::cout << "enter group name and password or \"/cancel\".\n";
+	std::cout << "name: ";
+	std::cin >> name;
+	std::cout << "\n";
+	if (name == "/cancel") return INPUT_CANCELED;
+	if (name.size() > 20 || name.size() == 0) return INPUT_ERROR;
+	for (int i = 0; i < name.size(); ++i)
 	{
-		return false;
+		if (is_letter_or_digit(name[i]) == false) return INPUT_ERROR;
+	}
+
+	std::cout << "password: ";
+	std::cin >> password;
+	std::cout << "\n";
+	if (password == "/cancel") return INPUT_CANCELED;
+	if (password.size() > 20 || password.size() == 0) return INPUT_ERROR;
+	for (int i = 0; i < password.size(); ++i)
+	{
+		if (is_letter_or_digit(password[i]) == false) return INPUT_ERROR;
 	}
 
 	_data += '&';
@@ -56,11 +98,37 @@ bool connect_data_input(std::string& _data)
 	_data += (char)password.size();
 	_data += password;
 
-	return true;
+	return INPUT_OK;
 }
 
-bool complete_command(std::string& _data, int _mode)
+void print_help(int _mode)
 {
+	if (_mode == NOT_AUTHORISED)
+	{
+		std::cout << "here are availible commands:\n"
+			"\t\"/new\" - create new group and connect to it\n"
+			"\t\"/connect\" - connect to existing group\n"
+			"\t\"/list\" - get list of groups\n\n";
+	}
+	else if (_mode == AUTHORISED)
+	{
+		std::cout << "here are availible commands:\n"
+			"\t\"/disconnect\" - leave group\n\n";
+	}
+}
+
+
+
+//unites some additional functions
+
+int complete_command(std::string& _data, int _mode)
+{
+	if (_data == "/help")
+	{
+		print_help(_mode);
+		return NO_ACTION;
+	}
+
 	if (_mode == NOT_AUTHORISED)
 	{
 		if (_data == "/new")
@@ -73,18 +141,22 @@ bool complete_command(std::string& _data, int _mode)
 		}
 		else if (_data == "/list")
 		{
-			return true;
+			return INPUT_OK;
 		}
 	}
 	else if (_mode == AUTHORISED)
 	{
-		if (_data == "/disconnect")
+		if (_data[0] != '/')
 		{
-			return true;
+			return INPUT_OK;
+		}
+		else if (_data == "/disconnect")
+		{
+			return INPUT_OK;
 		}
 	}
 
-	return false;
+	return COMMAND_ERROR;
 }
 
 //function for thread
@@ -182,9 +254,6 @@ int main()
 			std::cout << e.what() << "\n\n";
 		}
 	}
-	
-	
-
 
 	int mode = NOT_AUTHORISED;
 
@@ -195,25 +264,35 @@ int main()
 
 	std::cout << "connected to the server \n\n type in \"/help\" to see list of availible commands\n\n";
 
+	int action_code;
+
 	do
 	{
-		bool no_input_error = false;
 		std::cin >> message;
 
-		if (message == "/help")
+		action_code = complete_command(message, mode);
+
+		if (action_code == INPUT_OK)
 		{
-			if (mode == NOT_AUTHORISED)
-			{
-				std::cout << "here are availible commands:\n"
-					"\t\"/new\" - create new group and connect to it\n"
-					"\t\"/connect\" - connect to existing group\n"
-					"\t\"/list\" - get list of groups\n\n";
-			}
-			else if (mode == AUTHORISED)
-			{
-				std::cout << "here are availible commands:\n"
-					"\t\"/disconnect\" - leave group\n\n";
-			}
+			cs.send_message(message);
+		}
+		else if (action_code == INPUT_ERROR)
+		{
+			std::cout << "some data is incorrect\n\n";
+		}
+		else if (action_code == INPUT_CANCELED)
+		{
+			std::cout << "command was canceled\n\n";
+		}
+		else if (action_code == COMMAND_ERROR)
+		{
+			std::cout << "this command does not exist\n\n";
+		}
+		
+
+		/*if (message == "/help")
+		{
+			
 		}
 		else
 		{
@@ -251,7 +330,7 @@ int main()
 					cs.send_message(message);
 				}
 			}
-		}
+		}*/
 
 	} while (true);
 

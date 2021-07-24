@@ -1,1 +1,19 @@
-﻿  web_client_attempt.vcxproj -> C:\Users\User\Desktop\web_client_attempt\Release\web_client_attempt.exe
+﻿  answer_data.cpp
+C:\Users\User\Desktop\web_client_attempt\answer_data.cpp(6,16): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\User\Desktop\web_client_attempt\answer_data.cpp(20,25): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\User\Desktop\web_client_attempt\answer_data.cpp(36,17): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\User\Desktop\web_client_attempt\answer_data.cpp(58,10): warning C4834: отмена возвращаемого значения функции с атрибутом "nodiscard"
+C:\Users\User\Desktop\web_client_attempt\answer_data.cpp(65,23): warning C4018: <: несоответствие типов со знаком и без знака
+  connect_socket.cpp
+  main.cpp
+C:\Users\User\Desktop\web_client_attempt\main.cpp(45,20): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\User\Desktop\web_client_attempt\main.cpp(55,20): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\User\Desktop\web_client_attempt\main.cpp(79,20): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\User\Desktop\web_client_attempt\main.cpp(89,20): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\User\Desktop\web_client_attempt\main.cpp(164,39): warning C4114: Множественное использование одного и того же квалификатора типа.
+  Создание кода
+  194 of 204 functions (95.1%) were compiled, the rest were copied from previous compilation.
+    92 functions were new in current compilation
+    3 functions had inline decision re-evaluated but remain unchanged
+  Создание кода завершено
+  web_client_attempt.vcxproj -> C:\Users\User\Desktop\web_client_attempt\Release\web_client_attempt.exe
