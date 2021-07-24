@@ -1,0 +1,3 @@
+﻿  main.cpp
+C:\Users\User\Desktop\web_client_attempt\main.cpp(92,39): warning C4114: Множественное использование одного и того же квалификатора типа.
+  web_client_attempt.vcxproj -> C:\Users\User\Desktop\web_client_attempt\Debug\web_client_attempt.exe
