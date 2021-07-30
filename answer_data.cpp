@@ -1,51 +1,36 @@
 #include "answer_data.h"
 
-void answer_data::parse_groups(const std::string& _answer) noexcept
+void answer_data::parse_groups(const std::string& _answer, int _offset) noexcept
 {
-	int offset = 2;
-	while (offset < _answer.size())
-	{
-		if (_answer[offset] == '&')
-		{
-			++offset;
-			break;
-		}
-		++offset;
-	}
-	if (offset == _answer.size())
+	if (_offset == _answer.size())
 	{
 		return;
 	}
 
-	for (int i = offset; i < _answer.size(); ++i)
-	{
-		if (_answer[i] == '&')
-		{
-			++groups_count;
-		}
-	}
-	++groups_count;
+	groups_count = (unsigned int)_answer[_offset];
+
+	_offset += 2;
 
 	groups = new std::string[groups_count];
 
 	for (int i = 0; i < groups_count; ++i)
 	{
-		int size = _answer[offset];
+		int size = _answer[_offset];
 		groups[i].reserve(size);
-		++offset;
-		while (offset < _answer.size())
+		++_offset;
+		while (_offset < _answer.size())
 		{
-			if (_answer[offset] != '&')
+			if (_answer[_offset] != '&')
 			{
-				groups[i] += _answer[offset];
+				groups[i] += _answer[_offset];
 			}
 			else
 			{
 				break;
 			}
-			++offset;
+			++_offset;
 		}
-		++offset;
+		++_offset;
 	}
 }
 
@@ -53,32 +38,39 @@ void answer_data::parse_groups(const std::string& _answer) noexcept
 
 answer_data::answer_data(const std::string& _answer) noexcept
 {
-	if (_answer[0] != '/' || _answer[1] != '/')
+	if (_answer[0] != '/')
 	{
-		answer == NOT_AN_ANSWER;
+		command == NOT_AN_ANSWER;
 		return;
 	}
 
+	int size = _answer[1];
+
+	command.reserve(size);
+	for (int i = 1; i < size + 1; ++i)
+	{
+		command += _answer[i];
+	}
+
 	int offset = 2;
-	int size = 0;
 
-	while (offset + size < _answer.size())
+	while (_answer[offset] != '&')
 	{
-		if (_answer[offset + size] == '&')
-		{
-			break;
-		}
-		++size;
+		++offset;
 	}
-	answer.reserve(size);
-	for (int i = 0; i < size; ++i)
+	++offset;
+
+	size = _answer[offset];
+
+	status.reserve(size);
+	for (int i = 1; i < size + 1; ++i)
 	{
-		answer += _answer[offset + i];
+		status += _answer[i];
 	}
 
-	if (answer == LIST)
+	if (command == LIST)
 	{
-		parse_groups(_answer);
+		parse_groups(_answer, offset + size + 1);
 	}
 }
 
@@ -89,9 +81,14 @@ answer_data::~answer_data() noexcept
 
 
 
-const std::string& answer_data::get_answer() const noexcept
+const std::string& answer_data::get_command() const noexcept
 {
-	return answer;
+	return command;
+}
+
+const std::string& answer_data::get_status() const noexcept
+{
+	return status;
 }
 
 int answer_data::get_group_count() const noexcept

@@ -161,7 +161,7 @@ int complete_command(std::string& _data, int _mode)
 
 //function for thread
 
-void get_message(const connect_socket const* _socket, int* _mode)
+void get_message(const connect_socket const* _socket, int* const _mode)
 {
 	std::string message;
 
@@ -173,16 +173,31 @@ void get_message(const connect_socket const* _socket, int* _mode)
 
 		if (*_mode == NOT_AUTHORISED)
 		{
-			if (ad.get_answer() == SUCCESS)
+			if (ad.get_command() == NEW)
 			{
-				*_mode = AUTHORISED;
-				std::cout << "you have successfuly connected to the group\n\n";
+				if (ad.get_status() == SUCCESS)
+				{
+					*_mode = AUTHORISED;
+					std::cout << "you have successfuly created and connected to the group\n\n";
+				}
+				else if (ad.get_status() == FAIL)
+				{
+					std::cout << "could not connect to the group\n\n";
+				}
 			}
-			else if (ad.get_answer() == FAIL)
+			else if (ad.get_command() == CONNECT)
 			{
-				std::cout << "could not connect to the group\n\n";
+				if (ad.get_command() == SUCCESS)
+				{
+					*_mode = AUTHORISED;
+					std::cout << "you have successfuly connected to the group\n\n";
+				}
+				else if (ad.get_command() == FAIL)
+				{
+					std::cout << "could not connect to the group\n\n";
+				}
 			}
-			else if (ad.get_answer() == LIST)
+			else if (ad.get_command() == LIST)
 			{
 				if (ad.get_group_count() == 0)
 				{
@@ -201,12 +216,12 @@ void get_message(const connect_socket const* _socket, int* _mode)
 		}
 		else if(*_mode == AUTHORISED)
 		{
-			if (ad.get_answer() == DISCONNECTED)
+			if (ad.get_command() == DISCONNECT)
 			{
-				std::cout << "you disconnected from group\n\n";
+				std::cout << "you have disconnected from group\n\n";
 				*_mode = NOT_AUTHORISED;
 			}
-			else if (ad.get_answer() == NOT_AN_ANSWER)
+			else if (ad.get_command() == NOT_AN_ANSWER)
 			{
 				std::cout << "got an incoming message:\n" << message << "\n\n";
 			}
