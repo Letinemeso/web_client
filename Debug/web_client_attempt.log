@@ -1,11 +1,7 @@
-﻿  answer_data.cpp
-C:\Users\User\Desktop\web_client_attempt\answer_data.cpp(21,18): warning C4018: <: несоответствие типов со знаком и без знака
-C:\Users\User\Desktop\web_client_attempt\answer_data.cpp(43,11): warning C4834: отмена возвращаемого значения функции с атрибутом "nodiscard"
-  main.cpp
+﻿  main.cpp
 C:\Users\User\Desktop\web_client_attempt\main.cpp(45,20): warning C4018: <: несоответствие типов со знаком и без знака
 C:\Users\User\Desktop\web_client_attempt\main.cpp(55,20): warning C4018: <: несоответствие типов со знаком и без знака
 C:\Users\User\Desktop\web_client_attempt\main.cpp(79,20): warning C4018: <: несоответствие типов со знаком и без знака
 C:\Users\User\Desktop\web_client_attempt\main.cpp(89,20): warning C4018: <: несоответствие типов со знаком и без знака
-C:\Users\User\Desktop\web_client_attempt\main.cpp(164,39): warning C4114: Множественное использование одного и того же квалификатора типа.
-C:\Users\User\Desktop\web_client_attempt\main.cpp(204,27): error C2065: DISCONNECTED: необъявленный идентификатор
-  Создание кода...
+C:\Users\User\Desktop\web_client_attempt\main.cpp(176,39): warning C4114: Множественное использование одного и того же квалификатора типа.
+  web_client_attempt.vcxproj -> C:\Users\User\Desktop\web_client_attempt\Debug\web_client_attempt.exe

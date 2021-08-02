@@ -101,6 +101,18 @@ int connect_data_input(std::string& _data)
 	return INPUT_OK;
 }
 
+int form_message(std::string& _data)
+{
+	std::string formed_message("/message&");
+	formed_message += (char)((_data.size() / 128) == 0 ? 127 : (_data.size() / 128));
+	formed_message += (char)((_data.size() % 128) == 0 ? 127 : (_data.size() % 128));
+	formed_message += '&';
+	formed_message += _data;
+	_data = formed_message;
+
+	return INPUT_OK;
+}
+
 void print_help(int _mode)
 {
 	if (_mode == NOT_AUTHORISED)
@@ -148,7 +160,7 @@ int complete_command(std::string& _data, int _mode)
 	{
 		if (_data[0] != '/')
 		{
-			return INPUT_OK;
+			return form_message(_data);
 		}
 		else if (_data == "/disconnect")
 		{
@@ -187,12 +199,12 @@ void get_message(const connect_socket const* _socket, int* const _mode)
 			}
 			else if (ad.get_command() == CONNECT)
 			{
-				if (ad.get_command() == SUCCESS)
+				if (ad.get_status() == SUCCESS)
 				{
 					*_mode = AUTHORISED;
 					std::cout << "you have successfuly connected to the group\n\n";
 				}
-				else if (ad.get_command() == FAIL)
+				else if (ad.get_status() == FAIL)
 				{
 					std::cout << "could not connect to the group\n\n";
 				}
@@ -221,9 +233,9 @@ void get_message(const connect_socket const* _socket, int* const _mode)
 				std::cout << "you have disconnected from group\n\n";
 				*_mode = NOT_AUTHORISED;
 			}
-			else if (ad.get_command() == NOT_AN_ANSWER)
+			else if (ad.get_command() == MESSAGE)
 			{
-				std::cout << "got an incoming message:\n" << message << "\n\n";
+				std::cout << "got an incoming message:\n" << ad.get_message() << "\n\n";
 			}
 		}
 

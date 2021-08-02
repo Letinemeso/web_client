@@ -34,6 +34,19 @@ void answer_data::parse_groups(const std::string& _answer, int _offset) noexcept
 	}
 }
 
+void answer_data::parse_message(const std::string& _answer, int _offset) noexcept
+{
+	int length = 0;
+	length += (_answer[_offset] == 127 ? 0 : _answer[_offset]) * 128 + (_answer[_offset + 1] == 127 ? 0 : _answer[_offset + 1]);
+
+	message.reserve(length);
+
+	for (int i = _offset + 2; i < _answer.size(); ++i)
+	{
+		message += _answer[i];
+	}
+}
+
 
 
 answer_data::answer_data(const std::string& _answer) noexcept
@@ -47,7 +60,7 @@ answer_data::answer_data(const std::string& _answer) noexcept
 	int size = _answer[1];
 
 	command.reserve(size);
-	for (int i = 1; i < size + 1; ++i)
+	for (int i = 2; i < 2 + size; ++i)
 	{
 		command += _answer[i];
 	}
@@ -61,9 +74,10 @@ answer_data::answer_data(const std::string& _answer) noexcept
 	++offset;
 
 	size = _answer[offset];
+	++offset;
 
 	status.reserve(size);
-	for (int i = 1; i < size + 1; ++i)
+	for (int i = offset; i < offset + size; ++i)
 	{
 		status += _answer[i];
 	}
@@ -71,6 +85,10 @@ answer_data::answer_data(const std::string& _answer) noexcept
 	if (command == LIST)
 	{
 		parse_groups(_answer, offset + size + 1);
+	}
+	if (command == MESSAGE)
+	{
+		parse_message(_answer, offset + size + 1);
 	}
 }
 
@@ -104,4 +122,9 @@ const std::string& answer_data::get_group(int _index) const
 	}
 
 	return groups[_index];
+}
+
+const std::string& answer_data::get_message() const noexcept
+{
+	return message;
 }
