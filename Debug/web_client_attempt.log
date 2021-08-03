@@ -1,7 +1,7 @@
 ﻿  main.cpp
-C:\Users\User\Desktop\web_client_attempt\main.cpp(45,20): warning C4018: <: несоответствие типов со знаком и без знака
-C:\Users\User\Desktop\web_client_attempt\main.cpp(55,20): warning C4018: <: несоответствие типов со знаком и без знака
-C:\Users\User\Desktop\web_client_attempt\main.cpp(79,20): warning C4018: <: несоответствие типов со знаком и без знака
-C:\Users\User\Desktop\web_client_attempt\main.cpp(89,20): warning C4018: <: несоответствие типов со знаком и без знака
-C:\Users\User\Desktop\web_client_attempt\main.cpp(176,39): warning C4114: Множественное использование одного и того же квалификатора типа.
+C:\Users\User\Desktop\web_client_attempt\main.cpp(46,20): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\User\Desktop\web_client_attempt\main.cpp(57,20): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\User\Desktop\web_client_attempt\main.cpp(83,20): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\User\Desktop\web_client_attempt\main.cpp(94,20): warning C4018: <: несоответствие типов со знаком и без знака
+C:\Users\User\Desktop\web_client_attempt\main.cpp(181,39): warning C4114: Множественное использование одного и того же квалификатора типа.
   web_client_attempt.vcxproj -> C:\Users\User\Desktop\web_client_attempt\Debug\web_client_attempt.exe

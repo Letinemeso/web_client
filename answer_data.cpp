@@ -84,7 +84,10 @@ answer_data::answer_data(const std::string& _answer) noexcept
 
 	if (command == LIST)
 	{
-		parse_groups(_answer, offset + size + 1);
+		if (status == SUCCESS)
+		{
+			parse_groups(_answer, offset + size + 2);
+		}
 	}
 	if (command == MESSAGE)
 	{

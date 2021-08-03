@@ -39,6 +39,7 @@ int new_data_input(std::string& _data)
 		"name and password can only contain english letters, digits or \'_\' and can't be longer then 20 symbols\n";
 	std::cout << "name: ";
 	std::cin >> name;
+	std::cin.ignore();
 	std::cout << "\n";
 	if (name == "/cancel") return INPUT_CANCELED;
 	if (name.size() > 20 || name.size() == 0) return INPUT_ERROR;
@@ -49,6 +50,7 @@ int new_data_input(std::string& _data)
 
 	std::cout << "password: ";
 	std::cin >> password;
+	std::cin.ignore();
 	std::cout << "\n";
 	if (password == "/cancel") return INPUT_CANCELED;
 	if (password.size() > 20 || password.size() == 0) return INPUT_ERROR;
@@ -64,6 +66,7 @@ int new_data_input(std::string& _data)
 	_data += (char)password.size();
 	_data += password;
 
+
 	return INPUT_OK;
 }
 
@@ -73,6 +76,7 @@ int connect_data_input(std::string& _data)
 	std::cout << "enter group name and password or \"/cancel\".\n";
 	std::cout << "name: ";
 	std::cin >> name;
+	std::cin.ignore();
 	std::cout << "\n";
 	if (name == "/cancel") return INPUT_CANCELED;
 	if (name.size() > 20 || name.size() == 0) return INPUT_ERROR;
@@ -83,6 +87,7 @@ int connect_data_input(std::string& _data)
 
 	std::cout << "password: ";
 	std::cin >> password;
+	std::cin.ignore();
 	std::cout << "\n";
 	if (password == "/cancel") return INPUT_CANCELED;
 	if (password.size() > 20 || password.size() == 0) return INPUT_ERROR;
@@ -287,15 +292,19 @@ int main()
 	std::thread get_message_thread(&get_message, &cs, &mode);
 	get_message_thread.detach();
 
+	char buffer[7000] = { 0 };
 	std::string message;
 
 	std::cout << "connected to the server \n\n type in \"/help\" to see list of availible commands\n\n";
 
 	int action_code;
 
+	std::cin.ignore();
+
 	do
 	{
-		std::cin >> message;
+		std::cin.getline(buffer, 7000);
+		message = buffer;
 
 		action_code = complete_command(message, mode);
 
@@ -315,49 +324,6 @@ int main()
 		{
 			std::cout << "this command does not exist\n\n";
 		}
-		
-
-		/*if (message == "/help")
-		{
-			
-		}
-		else
-		{
-			if (mode == NOT_AUTHORISED)
-			{
-				no_input_error = complete_command(message, mode);
-
-				if (no_input_error == true)
-				{
-					cs.send_message(message);
-				}
-				else
-				{
-					std::cout << "some entered data is incorrect\n\n";
-				}
-			}
-			else if (mode == AUTHORISED)
-			{
-				if (message[0] == '/')
-				{
-					no_input_error = complete_command(message, mode);
-
-					if (no_input_error == true)
-					{
-						cs.send_message(message);
-					}
-					else
-					{
-						std::cout << "some entered data is incorrect\n\n";
-					}
-
-				}
-				else
-				{
-					cs.send_message(message);
-				}
-			}
-		}*/
 
 	} while (true);
 
